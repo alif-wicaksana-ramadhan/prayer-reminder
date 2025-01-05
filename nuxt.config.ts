@@ -13,4 +13,9 @@ export default defineNuxtConfig({
   //   right: true,
   //   duration: 5000
   // }
+  runtimeConfig: {
+    hereApiKey: "123",
+    hereHost: "127.0.0.1",
+    aladhanHost: "127.0.0.1",
+  }
 })
