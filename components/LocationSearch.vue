@@ -24,7 +24,6 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps(['location']);
 const emit = defineEmits(['update:location']);
 
 const isLoading = ref(false);
@@ -35,7 +34,6 @@ const inputRef = ref(null);
 const focusInput = async () => {
   await nextTick()
   inputRef.value?.focus();
-  console.log("TRIG")
 }
 
 const searchLocation = async () => {

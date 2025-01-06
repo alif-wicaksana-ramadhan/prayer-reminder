@@ -5,7 +5,7 @@
   >
     <h2 class="text-lg font-semibold">{{ name }}</h2>
     <div class="flex min-w-24 justify-between items-center">
-      <p class="text-gray-600 p-0 m-0">{{ time }}</p>
+      <p class="text-lg font-semibold text-gray-600 p-0 m-0">{{ time }}</p>
       <!-- Hidden checkbox -->
       <input
           type="checkbox"

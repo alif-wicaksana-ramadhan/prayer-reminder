@@ -30,11 +30,11 @@
 <!--          </div>-->
 <!--        </div>-->
         <div class="mt-2 pt-14 pb-10 px-16">
-          <PrayerCard name="Fajr" :time="prayers.fajr.time" v-model:checked="prayers.isha.reminder" />
-          <PrayerCard name="Dhuhr" :time="prayers.dhuhr.time" v-model:checked="prayers.isha.reminder" />
-          <PrayerCard name="Asr" :time="prayers.asr.time" v-model:checked="prayers.isha.reminder" />
-          <PrayerCard name="Maghrib" :time="prayers.maghrib.time" v-model:checked="prayers.isha.reminder" />
-          <PrayerCard name="Isha" :time="prayers.isha.time" v-model:checked="prayers.isha.reminder" />
+          <PrayerCard name="Fajr" :time="todayPrayers.fajr.time" v-model:checked="todayPrayers.isha.reminder" />
+          <PrayerCard name="Dhuhr" :time="todayPrayers.dhuhr.time" v-model:checked="todayPrayers.isha.reminder" />
+          <PrayerCard name="Asr" :time="todayPrayers.asr.time" v-model:checked="todayPrayers.isha.reminder" />
+          <PrayerCard name="Maghrib" :time="todayPrayers.maghrib.time" v-model:checked="todayPrayers.isha.reminder" />
+          <PrayerCard name="Isha" :time="todayPrayers.isha.time" v-model:checked="todayPrayers.isha.reminder" />
         </div>
       </div>
     </div>
@@ -66,7 +66,7 @@ const currentDateTime = ref("");
 const currentLocation = ref({});
 const isLocationModalShow = ref(false);
 
-const prayers = ref({
+const todayPrayers = ref({
   fajr: {
     time: null,
     reminder: false,
@@ -105,6 +105,8 @@ onMounted(() => {
   }else{
     currentLocation.value = {title: "Surabaya"};
   }
+
+  updatePrayerTimes();
 })
 
 const formattedDate = computed(() => {
@@ -133,6 +135,24 @@ const formattedHijriDate = computed(() => {
 const showChangeLocationModal = () => {
   isLocationModalShow.value = true;
   locationSearchRef.value?.focusInput();
+}
+
+const updatePrayerTimes = async () => {
+  const date = currentDateTime.value.split(',')[0].replaceAll('/', '-');
+  const latitude = currentLocation.value.position.lat;
+  const longitude = currentLocation.value.position.lng;
+  const res = await $fetch(`/api/aladhan/${date}?latitude=${latitude}&longitude=${longitude}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  })
+
+  todayPrayers.value.fajr.time = res.data.timings.Fajr;
+  todayPrayers.value.dhuhr.time = res.data.timings.Dhuhr;
+  todayPrayers.value.asr.time = res.data.timings.Asr;
+  todayPrayers.value.maghrib.time = res.data.timings.Maghrib;
+  todayPrayers.value.isha.time = res.data.timings.Isha;
 }
 
 </script>
