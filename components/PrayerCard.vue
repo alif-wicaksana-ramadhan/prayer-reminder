@@ -13,8 +13,8 @@
           class="hidden"
       />
       <!-- Conditional icons -->
-      <Icon v-if="isChecked" size="40px" name="ix:alarm-bell-filled" style="color: black" />
-      <Icon v-else size="40px" name="ix:alarm-bell-cancelled-filled" style="color: black" />
+      <Icon v-if="isChecked" size="30px" name="ix:alarm-bell-filled" style="color: black" />
+      <Icon v-else size="30px" name="ix:alarm-bell-cancelled-filled" style="color: black" />
     </div>
   </div>
 </template>

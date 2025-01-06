@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-between max-w-2xl mx-auto h-screen bg-green-100">
+  <div class="flex flex-col justify-between max-w-xl mx-auto h-screen max-h-screen bg-green-100">
 <!--    <div class="bg-green-900 text-white p-4 w-full">-->
 <!--      <h1 class="text-2xl font-bold">Prayer Alif Top</h1>-->
 <!--    </div>-->

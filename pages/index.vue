@@ -3,7 +3,7 @@
     <div class="flex flex-col py-8 px-4 max-w-[50%]">
       <span class="text-6xl font-bold mt-2">{{currentPrayer}}</span>
 <!--      <span class="text-2xl text-center font-bold mt-2 text-gray-600">{{eta}} to {{nextPrayer}}</span>-->
-      <div @click="isLocationModalShow=true" class="flex mt-4 items-center hover:cursor-pointer">
+      <div @click="showChangeLocationModal" class="flex mt-4 items-center hover:cursor-pointer">
         <Icon size="40px" name="ix:alarm-bell-filled" style="color: black" />
         <span class="text-xl font-bold ml-2 mt-2">{{ currentLocation.title }}</span>
       </div>
@@ -11,7 +11,7 @@
 <!--    <div class="w-l m-4 mt-[60px] bg-gray-200 rounded-full h-2">-->
 <!--      <div class="bg-green-900 h-2 rounded-full" style="width: 90%;"></div>-->
 <!--    </div>-->
-    <div class="bg-yellow-400 mt-14 pt-2 w-full h-fit rounded-t-full">
+    <div class="bg-yellow-400 mt-14 pt-2 w-full h-full rounded-t-full">
       <div class="bg-green-400 w-full h-full pt-16 rounded-t-full">
         <div class="flex flex-col w-full items-center justify-center content-center">
           <span class="text-center w-fit text-sm px-2 py-1 mt-2 rounded border bg-white">{{day}}</span>
@@ -40,7 +40,11 @@
     </div>
 
     <div v-show="isLocationModalShow" @click.self="isLocationModalShow=false" class="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-10">
-      <location-search v-model:location="currentLocation" @update:location="isLocationModalShow=false"/>
+      <LocationSearch
+          v-model:location="currentLocation"
+          @update:location="isLocationModalShow=false"
+          ref="locationSearchRef"
+      />
     </div>
   </div>
 </template>
@@ -53,6 +57,7 @@ import LocationSearch from "~/components/LocationSearch.vue";
 const runtimeConfig = useRuntimeConfig()
 // const { coords, isSupported } = useGeolocation();
 
+const locationSearchRef = ref(null);
 const currentPrayer = ref("Unknown");
 const nextPrayer = ref("Unknown");
 const eta = ref(0);
@@ -124,6 +129,11 @@ const formattedHijriDate = computed(() => {
   moment.locale('en');
   return `${moment().format('iMMMM iD, iYYYY')} AH`;
 })
+
+const showChangeLocationModal = () => {
+  isLocationModalShow.value = true;
+  locationSearchRef.value?.focusInput();
+}
 
 </script>
 
