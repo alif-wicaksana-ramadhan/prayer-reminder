@@ -58,9 +58,8 @@ const runtimeConfig = useRuntimeConfig()
 // const { coords, isSupported } = useGeolocation();
 
 const locationSearchRef = ref(null);
-const currentPrayer = ref("Unknown");
 const nextPrayer = ref("Unknown");
-const eta = ref(0);
+const currentTime = ref("00:00");
 const day = ref("Today");
 const currentDateTime = ref("");
 const currentLocation = ref({});
@@ -89,7 +88,7 @@ const todayPrayers = ref({
   }
 })
 
-onMounted(() => {
+onMounted(async () => {
   const now = new Date();
   currentDateTime.value = now.toLocaleString();
 
@@ -106,7 +105,39 @@ onMounted(() => {
     currentLocation.value = {title: "Surabaya"};
   }
 
+  await updatePrayerTimes();
+
+  setInterval(() => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    currentTime.value = `${hours}:${minutes}`
+  }, 1000);
+})
+
+watch(currentLocation, (newLocation) => {
   updatePrayerTimes();
+})
+
+const currentPrayer = computed(() => {
+  const prayers = Object.entries(todayPrayers.value).map(([name, details]) => ({
+    name,
+    time: details.time,
+  }));
+  console.log(prayers);
+
+  // Sort prayers by time to ensure order
+  prayers.sort((a, b) => a.time?.localeCompare(b.time));
+
+  // Iterate to find the current prayer
+  for (let i = 0; i < prayers.length; i++) {
+    if (currentTime < prayers[i].time) {
+      return i > 0 ? prayers[i - 1].name : prayers[prayers.length - 1].name;
+    }
+  }
+
+  // If the input time is after the last prayer, return the last prayer
+  return prayers[prayers.length - 1].name.charAt(0).toUpperCase() + prayers[prayers.length - 1].name.slice(1);
 })
 
 const formattedDate = computed(() => {
@@ -138,6 +169,7 @@ const showChangeLocationModal = () => {
 }
 
 const updatePrayerTimes = async () => {
+  console.info("UPDATE PRAYER TIME");
   const date = currentDateTime.value.split(',')[0].replaceAll('/', '-');
   const latitude = currentLocation.value.position.lat;
   const longitude = currentLocation.value.position.lng;
